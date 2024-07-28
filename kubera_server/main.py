@@ -9,10 +9,12 @@ from fastapi import FastAPI, Depends
 
 from kubera_server.logging import get_logger
 from kubera_server.config import Settings, get_settings
+from kubera_server import accounts
 
 logger = get_logger()
 
 app = FastAPI()
+app.include_router(accounts.router)
 
 @app.get("/")
 def root(settings: Annotated[Settings, Depends(get_settings)]):

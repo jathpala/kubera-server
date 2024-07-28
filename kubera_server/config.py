@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     service_name: str = "kubera"
     service_version: str = "1.0"
 
+    db_path: str
+
     model_config = SettingsConfigDict(env_file=".env")
 
 

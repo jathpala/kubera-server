@@ -10,15 +10,16 @@ handlers:
         level: DEBUG
         formatter: simple
         stream: ext://sys.stderr
-    # file:
-    #     class: logging.handlers.RotatingFileHandler
-    #     level: DEBUG
-    #     formatter: simple
-    #     filename: logs/kubera.log
-    #     maxBytes: 10000
-    #     backupCount: 3
+    file:
+        class: logging.handlers.RotatingFileHandler
+        level: DEBUG
+        formatter: simple
+        filename: logs/kubera.log
+        maxBytes: 10000
+        backupCount: 3
 loggers:
-    root:
+    kubera_server:
         level: DEBUG
         handlers:
             - stderr
+            - file

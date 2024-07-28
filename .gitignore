@@ -1,4 +1,5 @@
 .venv/
 **/__pycache__/
 
-logs/
+kubera.db
+logs/*
