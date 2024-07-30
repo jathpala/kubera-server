@@ -31,3 +31,20 @@ def get_db():
         yield db
     finally:
         db.close()
+
+class DatabaseError(Exception):
+    """
+    Generic database error
+
+    Properties:
+      status   - A numeric status code for the error
+      error    - A detailed explanation of the error for debugging
+      message  - An end-user friendly message to show
+    """
+
+    def __init__(self, status: int | None = None, error: str | None = None,
+                 message: str | None = None):
+        super().__init__(status, error, message)
+        self.status = status
+        self.error = error
+        self.message = message
