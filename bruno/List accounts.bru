@@ -4,8 +4,15 @@ meta {
   seq: 2
 }
 
-get {
+post {
   url: 127.0.0.1:8000/accounts
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "name": "Test",
+    "type": "equity"
+  }
 }

@@ -26,7 +26,7 @@ def upgrade() -> None:
         "accounts",
         sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
         sa.Column("name", sa.String, nullable=False, unique=True),
-        sa.Column("type", sa.Enum("equity", "asset", "liability", "revenue", "expense", name="type_enum", create_constraint=True), nullable=False)
+        sa.Column("type", sa.Enum("EQUITY", "ASSET", "LIABILITY", "REVENUE", "EXPENSE", name="type_enum", create_constraint=True), nullable=False)
     )
     with op.batch_alter_table("accounts") as batch_op:
         batch_op.create_check_constraint(

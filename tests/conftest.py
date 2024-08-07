@@ -4,10 +4,11 @@ Licensed under the Affero General Public License version 3
 """
 
 import os
+from pathlib import Path
 
 import pytest
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from alembic import command
 from alembic.config import Config
@@ -30,6 +31,11 @@ def test_db(tmp_path):
     alembic_cfg = Config("alembic.ini")
     alembic_cfg.set_main_option("sqlalchemy.url", db_uri)
     command.upgrade(alembic_cfg, "head")
+
+    with engine.begin() as connection:
+        with open(Path("tests", "mock_data.sql"), encoding="utf-8") as file:
+            query = text(file.read())
+            connection.execute(query)
 
     try:
         db = session()

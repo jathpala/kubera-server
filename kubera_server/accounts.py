@@ -9,11 +9,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import StringConstraints, BaseModel, ConfigDict
 from sqlalchemy import String, Integer, Enum as SaEnum, select, delete
-from sqlalchemy.orm import Session, Mapped, mapped_column
+from sqlalchemy.orm import Session, Mapped, mapped_column, relationship
 import sqlalchemy.exc
 
 from kubera_server.database import OrmBase, get_db, DatabaseError
 from kubera_server.logging import get_logger
+# from kubera_server import transactions
 
 logger = get_logger()
 
@@ -57,6 +58,18 @@ class AccountModel(OrmBase):
     name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     type: Mapped[AccountTypes] = mapped_column(SaEnum(AccountTypes), nullable=False)
 
+    # debits: Mapped["list[transactions.TransactionModel]"] = relationship(
+    #     "transactions.TransactionModel",
+    #     foreign_keys=["transactions.TransactionModel.debit"],
+    #     back_populates="debit"
+    # )
+    # credits: Mapped["list[transactions.TransactionModel]"] = relationship(
+    #     "transactions.TransactionModel",
+    #     foreign_keys=["transactions.TransactionModel.credit"],
+    #     back_populates="credit"
+    # )
+
+
     @classmethod
     def list(cls, db: Session) -> list["AccountModel"]:
         """
@@ -78,7 +91,7 @@ class AccountModel(OrmBase):
         record = db.scalar(stmt)
 
         if not record:
-            raise DatabaseError(message = "Account not found")
+            raise DatabaseError(error = "AccountNotFound", message = f"No account with the given id: {account_id}")
 
         return record
 
@@ -99,6 +112,7 @@ class AccountModel(OrmBase):
             db.commit()
             db.refresh(record)
         except sqlalchemy.exc.IntegrityError as e:
+            logger.debug(e)
             raise DatabaseError(message = "Account already exists") from e
 
         return record
